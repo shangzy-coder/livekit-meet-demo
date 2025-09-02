@@ -1,0 +1,82 @@
+# version: '3.8'  # 移除过时的 version 字段
+
+services:
+  # Redis - 必需的消息队列，用于LiveKit Server和Egress通信
+  redis:
+    image: redis:7-alpine
+    container_name: livekit-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - livekit-network
+
+  livekit-server:
+    image: livekit/livekit-server:latest
+    container_name: livekit-server
+    ports:
+      - "7880:7880"      # WebSocket/HTTP API (更新端口)
+      - "7881:7881"      # TCP for WebRTC
+      - "50000-50100:50000-50100/udp"  # UDP range for WebRTC media (统一端口范围)
+    volumes:
+      - ./livekit-config/livekit.yaml:/etc/livekit.yaml:ro
+    environment:
+      - LIVEKIT_CONFIG_FILE=/etc/livekit.yaml
+    command: ["--config", "/etc/livekit.yaml"]
+    restart: unless-stopped
+    depends_on:
+      - redis
+    networks:
+      - livekit-network
+
+  # LiveKit Egress - 录制服务
+  livekit-egress:
+    image: livekit/egress:latest
+    container_name: livekit-egress
+    restart: unless-stopped
+    ports:
+      - "8080:8080"   # Health check port
+      - "9090:9090"   # Prometheus metrics
+    volumes:
+      - ./egress-config.yaml:/etc/egress.yaml:ro
+      - ./recordings:/out  # 本地录制文件存储
+    environment:
+      - EGRESS_CONFIG_FILE=/etc/egress.yaml
+    depends_on:
+      - redis
+      - livekit-server
+    networks:
+      - livekit-network
+    # Chrome需要特殊权限
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+
+  meet:
+    build: .
+    container_name: livekit-meet
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - LIVEKIT_API_KEY=devkey
+      - LIVEKIT_API_SECRET=secret
+      - LIVEKIT_URL=ws://livekit-server:7880  # 更新端口
+      - NEXT_PUBLIC_SHOW_SETTINGS_MENU=true
+      - NEXT_PUBLIC_LK_RECORD_ENDPOINT=/api/record
+    depends_on:
+      - livekit-server
+    restart: unless-stopped
+    networks:
+      - livekit-network
+
+volumes:
+  redis_data:
+
+networks:
+  livekit-network:
+    driver: bridge

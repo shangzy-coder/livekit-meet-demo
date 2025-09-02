@@ -1,0 +1,54 @@
+# LiveKit Server Configuration
+port: 7880
+
+# Redis配置 - 用于与Egress录制服务通信
+redis:
+  address: redis:6379
+  # username: ""
+  # password: ""
+  # db: 0
+
+# WebRTC configuration
+rtc:
+  # TCP port for WebRTC connections
+  tcp_port: 7881
+  # UDP port range for media (与docker-compose.yml保持一致)
+  port_range_start: 50000
+  port_range_end: 50100
+  # Use external IP for production (set to true in production)
+  use_external_ip: false
+  # STUN servers for NAT traversal
+  stun_servers:
+    - stun:stun.l.google.com:19302
+
+# API keys for authentication
+keys:
+  devkey: secret
+
+# Development settings
+development: true
+
+# Logging configuration
+logging:
+  level: info
+  
+# Room settings
+room:
+  # Auto create rooms
+  auto_create: true
+  # Max participants per room (0 = unlimited)
+  max_participants: 0
+  # Room timeout in seconds
+  empty_timeout: 300
+
+# Audio/Video settings
+audio:
+  # Audio codecs
+  codecs:
+    - opus
+video:
+  # Video codecs  
+  codecs:
+    - h264
+    - vp8
+    - vp9

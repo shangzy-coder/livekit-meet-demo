@@ -1,0 +1,91 @@
+# LiveKit Egress录制服务配置文件
+
+# 必需字段 - 与LiveKit Server保持一致
+api_key: "devkey"
+api_secret: "secret"
+ws_url: "ws://livekit-server:7880"
+
+# Redis配置 - 必须与LiveKit Server使用相同的Redis
+redis:
+  address: redis:6379
+  # username: ""
+  # password: ""
+  # db: 0
+
+# 可选字段
+health_port: 8080
+template_port: 7980
+prometheus_port: 9090
+debug_handler_port: 0
+
+# 日志配置
+logging:
+  level: info
+  json: false
+
+# 模板基础URL（可选）
+# template_base: "http://localhost:7980/"
+
+# 备份存储（上传失败时的备份位置）
+backup_storage: "/out/backup"
+
+# Chrome沙箱配置（Docker环境建议关闭）
+enable_chrome_sandbox: false
+
+# CPU成本估算（可选）
+cpu_cost:
+  room_composite_cpu_cost: 3.0
+  web_cpu_cost: 3.0
+  track_composite_cpu_cost: 2.0
+  track_cpu_cost: 1.0
+
+# 会话限制（可选）
+session_limits:
+  file_output_max_duration: 3h
+  stream_output_max_duration: 90m
+  segment_output_max_duration: 6h
+
+# 文件上传配置示例
+# 注意：当前配置为本地存储，录制文件将保存在 ./recordings 目录
+# 生产环境建议使用云存储（S3、Azure、GCP等）
+
+# AWS S3存储示例（取消注释并填入您的信息）
+# storage:
+#   s3:
+#     access_key: "your-access-key"
+#     secret: "your-secret-key"
+#     region: "us-west-2"
+#     bucket: "your-recordings-bucket"
+#     endpoint: ""  # 可选，用于S3兼容存储
+
+# Azure存储示例
+# storage:
+#   azure:
+#     account_name: "your-account-name"
+#     account_key: "your-account-key"
+#     container_name: "recordings"
+
+# Google Cloud存储示例
+# storage:
+#   gcp:
+#     credentials_json: "/path/to/credentials.json"
+#     bucket: "your-recordings-bucket"
+
+# 阿里云OSS存储示例
+# storage:
+#   alioss:
+#     access_key: "your-access-key"
+#     secret: "your-secret-key"
+#     region: "oss-cn-hangzhou"
+#     bucket: "your-recordings-bucket"
+
+# 开发/调试字段
+insecure: false
+debug:
+  enable_profiling: false
+  # 如果启用profiling，可以配置上传位置
+  # s3:
+  #   access_key: "debug-access-key"
+  #   secret: "debug-secret-key"
+  #   region: "us-west-2"
+  #   bucket: "debug-bucket"
