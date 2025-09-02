@@ -3,11 +3,11 @@ FROM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat git
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Clone the official LiveKit Meet repository
-RUN git clone https://github.com/livekit-examples/meet.git .
+# Copy the meet submodule source code
+COPY meet/ .
 
 # Install dependencies with Taobao mirror
 RUN npm install -g pnpm
