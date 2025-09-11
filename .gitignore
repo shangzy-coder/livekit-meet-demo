@@ -240,3 +240,4 @@ meet/.env.local
 meet/.env.development.local
 meet/.env.test.local
 meet/.env.production.local
+meet/

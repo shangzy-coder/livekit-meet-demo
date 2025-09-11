@@ -1,5 +1,6 @@
 # LiveKit Server Configuration
 port: 7880
+bind_addresses: ["0.0.0.0"]
 
 # Redis配置 - 用于与Egress录制服务通信
 redis:
@@ -19,7 +20,7 @@ rtc:
   use_external_ip: false
   # STUN servers for NAT traversal
   stun_servers:
-    - stun:stun.l.google.com:19302
+    - "stun.l.google.com:19302"
 
 # API keys for authentication
 keys:
@@ -41,14 +42,5 @@ room:
   # Room timeout in seconds
   empty_timeout: 300
 
-# Audio/Video settings
-audio:
-  # Audio codecs
-  codecs:
-    - opus
-video:
-  # Video codecs  
-  codecs:
-    - h264
-    - vp8
-    - vp9
+# Audio/Video settings will be handled by LiveKit Server defaults
+# Codec configuration is now managed automatically by the server
