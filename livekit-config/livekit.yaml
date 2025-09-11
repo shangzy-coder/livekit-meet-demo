@@ -2,13 +2,6 @@
 port: 7880
 bind_addresses: ["0.0.0.0"]
 
-# Redis配置 - 用于与Egress录制服务通信
-redis:
-  address: redis:6379
-  # username: ""
-  # password: ""
-  # db: 0
-
 # WebRTC configuration
 rtc:
   # TCP port for WebRTC connections
